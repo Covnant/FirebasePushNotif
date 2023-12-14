@@ -57,10 +57,7 @@ fun LoginScreen(
             )
         )
         FilledTonalButton(
-            onClick = {
-                loginStateChange.onLogin
-                 navigator?.navigate(MainDestination)
-            },
+            onClick =  loginStateChange.onLogin ,
             modifier = Modifier.padding(8.dp)
         ) {
             Text(text = "Login")
