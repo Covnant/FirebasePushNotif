@@ -1,5 +1,6 @@
 package com.covenant.firebasepushnotif.screens.Login
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.covenant.firebasepushnotif.screens.destinations.MainDestination
 import com.covenant.firebasepushnotif.screens.destinations.RegisterDestination
 import com.covenant.firebasepushnotif.ui.theme.FirebasePushNotifTheme
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -45,8 +45,17 @@ fun LoginScreen(
             onValueChange = loginStateChange.onEmailChange,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            )
+            ),
+            isError = loginState.hasEmailError,
         )
+        AnimatedVisibility(visible = loginState.hasEmailError) {
+            Text(
+                text = "Email cannot be empty",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+            )
+        }
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             label = { Text(text = "Password")},
@@ -54,8 +63,17 @@ fun LoginScreen(
             onValueChange = loginStateChange.onPasswordChange,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            )
+            ),
+            isError = loginState.hasPasswordError,
         )
+        AnimatedVisibility(visible = loginState.hasPasswordError) {
+            Text(
+                text = "Password cannot be empty",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+            )
+        }
         FilledTonalButton(
             onClick =  loginStateChange.onLogin ,
             modifier = Modifier.padding(8.dp)

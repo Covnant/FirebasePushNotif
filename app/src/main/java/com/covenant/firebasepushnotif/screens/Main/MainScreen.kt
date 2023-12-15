@@ -12,16 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.covenant.firebasepushnotif.screens.destinations.LoginDestination
 import com.covenant.firebasepushnotif.ui.theme.FirebasePushNotifTheme
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 fun MainScreen(
     email: String,
     mainStateChange: MainStateChange,
-    navigator: DestinationsNavigator?,
-    mainState: MainState
 ) {
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -42,8 +38,6 @@ fun MainScreenPreview() {
     FirebasePushNotifTheme {
         MainScreen(
             email = "",
-            mainState = MainState(),
-            navigator = null,
             mainStateChange = MainStateChange(
                 onLogout = {}
             )

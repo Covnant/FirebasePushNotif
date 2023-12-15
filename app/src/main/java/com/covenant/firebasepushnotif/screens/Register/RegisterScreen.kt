@@ -1,5 +1,6 @@
 package com.covenant.firebasepushnotif.screens.Register
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,8 +44,17 @@ fun RegisterScreen(
             onValueChange = registerStateChange.onEmailChange,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            )
+            ),
+            isError = registerState.emailError,
         )
+        AnimatedVisibility(visible = registerState.emailError) {
+            Text(
+                text = "Email cannot be empty",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+            )
+        }
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             label = { Text(text = "Password") },
@@ -52,8 +62,17 @@ fun RegisterScreen(
             onValueChange = registerStateChange.onPasswordChange,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            )
+            ),
+            isError = registerState.passwordError,
         )
+        AnimatedVisibility(visible = registerState.passwordError) {
+            Text(
+                text = "Password cannot be empty",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+            )
+        }
         Spacer(modifier = Modifier.padding(8.dp))
         TextField(
             label = { Text(text = "Repeat Password") },
@@ -62,7 +81,16 @@ fun RegisterScreen(
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
             ),
+            isError = registerState.repeatedPasswordError,
         )
+        AnimatedVisibility(visible = !registerState.checkPassword) {
+            Text(
+                text = "Password does not match",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+            )
+        }
         FilledTonalButton(
             onClick = registerStateChange.onRegister,
             modifier = Modifier.padding(8.dp),
@@ -80,6 +108,7 @@ fun RegisterScreen(
                 Text(text = "Login")
             }
         }
+
 
     }
 }

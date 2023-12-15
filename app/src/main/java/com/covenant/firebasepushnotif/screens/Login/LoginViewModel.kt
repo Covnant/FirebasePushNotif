@@ -1,49 +1,50 @@
 package com.covenant.firebasepushnotif.screens.Login
 
 import android.app.Application
-import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import com.covenant.firebasepushnotif.MainActivity
-import com.covenant.firebasepushnotif.screens.Main.Main
-import com.covenant.firebasepushnotif.screens.Main.MainState
-import com.covenant.firebasepushnotif.screens.Register.RegisterState
+import com.covenant.firebasepushnotif.extensions.showLongToast
+import com.covenant.firebasepushnotif.extensions.showShortToast
 import com.covenant.firebasepushnotif.screens.destinations.MainDestination
-import com.covenant.firebasepushnotif.screens.destinations.RegisterDestination
 import com.google.firebase.auth.FirebaseAuth
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginViewModel(application: Application, private val navigator: DestinationsNavigator): AndroidViewModel(application){
+class LoginViewModel(private val application: Application, private val navigator: DestinationsNavigator): AndroidViewModel(application){
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    val currentUser = firebaseAuth.currentUser
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
-    private val _mainState = MutableStateFlow(MainState())
-    val mainState = _mainState.asStateFlow()
 
     fun onLogin(){
-        val loginCredentials = loginState.value
-        firebaseAuth.signInWithEmailAndPassword(
-            loginCredentials.email,
-            loginCredentials.password,
-        ).addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                navigator.navigate(MainDestination)
+        var state = loginState.value
+
+        if(state.email.isBlank()) state = state.copy(hasEmailError = true)
+        if(state.password.isBlank()) state = state.copy(hasPasswordError = true)
+
+        if(!state.hasError){
+            firebaseAuth.signInWithEmailAndPassword(
+                state.email,
+                state.password,
+            ).addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    application.showShortToast("Login Successful")
+                    navigator.navigate(MainDestination)
+                }
+            }.addOnFailureListener {exception ->
+                application.showLongToast("Error: ${exception.message}")
             }
         }
+        _loginState.update { state }
     }
 
     fun onEmailChange(email: String){
         _loginState.update {
             it.copy(
-                email = email
+                email = email,
+                hasEmailError = false,
             )
         }
     }
@@ -51,7 +52,8 @@ class LoginViewModel(application: Application, private val navigator: Destinatio
     fun onPasswordChange(password: String){
         _loginState.update {
             it.copy(
-                password = password
+                password = password,
+                hasPasswordError = false,
             )
         }
     }
